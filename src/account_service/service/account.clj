@@ -1,23 +1,24 @@
 (ns account-service.service.account
   (:require [account-service.infrastructure.client.database.account :as account]
-            [account-service.util.response :refer [created forbidden noContent notFound ok]]
+            [account-service.util.response :refer [created forbidden noContent notFound ok ok-array]]
             [clojure.data.json :as json]
-            [clojure.tools.logging :as log]
             [ring.util.codec :as codec]))
 
-(defn fetchAll [{:as req :keys [params]}]
+(defn fetchAll [{:keys [params]}]
   (if (and (some? (:offset params)) (some? (:size params)))
-    (do
-      (let [result (account/fetchAll
-                     (Long/parseLong (:size params)) (Long/parseLong (:offset params)))]
-        (log/info result))
-      )
-    (do
-      (let [result account/fetchAll]
-        (log/info result)
-        (log/info (json/write-str result))
+    (-> (account/fetchAll
+          (Long/parseLong (:size params)) (Long/parseLong (:offset params)))
+        (vec)
+        (json/write-str)
+        (ok-array)
         )
-      ))
+    (->
+      (account/fetchAll)
+      (vec)
+      (json/write-str)
+      (ok-array)
+      )
+    )
   )
 
 (defn fetchOne [{:keys [params]}]

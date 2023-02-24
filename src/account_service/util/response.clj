@@ -9,6 +9,7 @@
    :status 200
    :header -header
    :body   (-> body
+               (dissoc :password)
                (json/write-str))
    })
 
@@ -29,6 +30,7 @@
    :status 201
    :header -header
    :body   (-> body
+               (dissoc :password)
                (json/write-str))
    })
 
@@ -40,3 +42,10 @@
                (json/write-str))
    }
   )
+
+(defn ok-array [body]
+  {
+   :status 200
+   :header -header
+   :body   body
+   })

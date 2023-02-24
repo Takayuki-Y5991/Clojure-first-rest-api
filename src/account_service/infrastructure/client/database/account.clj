@@ -18,19 +18,19 @@
 
 
 (defn save [entity]
-  (jdbc/insert!
-    db-spec
-    :account entity))
+  (first (jdbc/insert!
+           db-spec
+           :account entity)))
 
 (defn change [entity]
-  (jdbc/update!
-    db-spec
-    :account {:name (:name entity) :email (:email entity)} ["id = ?" (:id entity)]))
+  (first (jdbc/update!
+           db-spec
+           :account {:name (:name entity) :email (:email entity)} ["id = ?" (:id entity)])))
 
 (defn changePassword [newPassword id]
-  (jdbc/update!
-    db-spec
-    :account {:password newPassword} ["id = ?" id]))
+  (first (jdbc/update!
+           db-spec
+           :account {:password newPassword} ["id = ?" id])))
 
 (defn fetchAll
   ([]
